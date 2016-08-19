@@ -1,0 +1,289 @@
+\documentclass[a4paper,10pt,twoside]{article}
+\pdfoutput=1 
+
+\usepackage{amssymb,amsmath}       % Equations
+\usepackage{array}
+\usepackage{bm}                    % Bold math symbols
+\usepackage{epsfig}
+\usepackage{float}
+\usepackage{graphicx,color,psfrag} % Graphics, Figures
+\usepackage{multirow}              % For Tables
+\usepackage{tabularx}              % Tables
+\usepackage{wrapfig}
+\usepackage[ruled, linesnumbered]{algorithm2e}
+\setlength{\algomargin}{2.5em}
+\let\oldnl\nl% Store \nl in \oldnl
+\SetStartEndCondition{ }{}{}%
+\SetKwIF{If}{ElseIf}{Else}{if}{ then}{elif}{else}{}%
+\SetKwFor{For}{for}{ do}{}%
+\SetKwFor{ForEach}{foreach}{ do}{}%
+\SetKwInOut{Input}{Input}%
+\SetKwInOut{Output}{Output}%
+\AlgoDontDisplayBlockMarkers%
+\SetAlgoNoEnd%
+\SetAlgoNoLine%
+\DontPrintSemicolon
+
+%% enumitem 
+% \labelindent is defined in both IEEEtrans and
+% enumitem. \let\labelindent\relax kind-of disables \labelindent
+% defined in IEEEtrans, hence avoiding the name clash.
+\let\labelindent\relax
+\usepackage[inline]{enumitem}
+
+%% algorithm2e
+\usepackage[ruled,linesnumbered]{algorithm2e}
+% remove line number for one line
+\let\oldnl\nl
+\newcommand{\nonl}{\renewcommand{\nl}{\let\nl\oldnl}}
+
+%% subfigure
+\usepackage[caption=false,font=footnotesize]{subfig}
+% make references to subfigures appear as \thefigure(\thesubfigure)
+\captionsetup[subfigure]{subrefformat=simple,labelformat=simple,listofformat=subsimple}
+\renewcommand\thesubfigure{(\alph{subfigure})}
+
+% variables
+\newcommand{\mc}[2][]{{\mathcal{#2}_{\textrm{#1}}}}
+\newcommand{\q}[1]{\bm{q}_{\textrm{#1}}}
+\newcommand{\qd}[1]{\bm{\dot{q}}_{\textrm{#1}}}
+\newcommand{\T}[1]{\bm{T}_{\textrm{#1}}}
+\newcommand{\x}[1]{\bm{x}_{\textrm{#1}}}
+\newcommand{\qvect}{\bm{q}}
+\newcommand{\Tvect}{\bm{T}}
+\newcommand{\GP}{\mathcal{G}\cap\mathcal{P}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cO}{\mathcal{O}}
+\newcommand{\bfp}{\mathbf{p}}
+% acronyms
+\newcommand{\ie}{{\textit{i.e.}}}
+\newcommand{\etal}{\textit{et~al.}}
+
+% theorem environment
+\newtheorem{theorem}{Theorem}
+\newtheorem{proof}{Proof}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{remark}{Remark}
+% TODO
+\newcommand{\TODO}[1]{\noindent {\color{red} \{{\bf To-do:} #1\}}}
+% COMMENT
+\newcommand{\comment}[1]{}
+
+% change tt font
+\renewcommand{\tt}{\fontfamily{cmtt}\selectfont}
+
+% figures path
+\graphicspath{{figures/}}
+
+% \overrideIEEEmargins
+% set margins
+\setlength{\floatsep}{2pt plus 1pt minus 1pt}
+\setlength{\textfloatsep}{5pt plus 1pt minus 2pt}
+
+%% TITLE
+\title{MAS714-Homework 1}
+%% AUTHOR
+\author{Pham Tien Hung, Zhang Xu
+}
+
+%% DATE
+\date{}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle
+% \thispagestyle{empty}
+% \pagestyle{empty}
+
+\subsection*{Excercise 1}
+
+The sequence is:
+
+\begin{enumerate}
+	\item f3
+	\item f2
+	\item f7
+	\item f5
+	\item f1
+	\item f4
+	\item f6
+\end{enumerate}
+
+\subsection*{Excercise 2}
+\subsubsection*{a)} 
+
+Answer: \emph{True}. Given $f(n)=O(g(n))$, we will prove that $\log_2f(n) = O(\log_2f(n))$.
+\textbf{Proof}
+
+First, it is noted that we assume $f(n), g(n) \geq 1$ for all $n > 0$. This
+assumption ensures that the log-versions of $f$ and $g$ are non-negative,
+which is a condition for the usage of the big $O$ notation.
+
+We need to show that there exist $c > 0, n_0 \geq 0$ such that for all $n \geq n_0$,
+we have
+\begin{equation}
+	\label{eq:f=O(g)}
+	\log_2f(n) \leq c \log_2g(n).
+\end{equation}
+Since $f(n)=O(g(n))$, there exist $c' > 0, n_1 \geq 0$ such that for all $n \geq n_1$,
+we have
+\[
+	f(n) \leq c' g(n).
+\]
+Clearly we can select $c' > 1$. Applying $\log_2$ to both sides, we have,
+\[
+	\log_2f(n) \leq \log_2 (c' g(n)) = \log_2 c' + \log_2 g(n).
+\]
+Since $g(n)$ is increasing, for $n \geq n_1$,
+\[
+	\log_2 g(n_1) \leq \log_2 g(n),
+\]
+\[
+	\log_2 c' \leq \frac{\log_2 c'}{\log_2 g(n_1)}\log_2 g(n)
+\]
+from which implies
+\[
+	\log_2f(n) \leq (1 + \frac{\log_2 c'}{\log_2 g(n_1)})\log_2 g(n).
+\]
+We have $\log_2f(n) = O(\log_2f(n))$ follows.
+
+\subsubsection*{b)}
+Answer: \emph{False}. Here is one counterexample
+
+Let $f(n) = 2n, g(n) = n$, clearly $2n=O(n)$. However 
+\[
+ 	2 ^ {2n} = 4^n \notin O(2^n)
+ \] 
+\subsubsection*{c)}
+Answer: \emph{True}.
+\begin{proof}
+Since $f(n)=O(g(n))$, there exist $c > 0, n_0 \geq 0$ such that for all $n \geq n_0$,
+we have
+\[
+	f(n) \leq c g(n),
+\]
+which is equivalent to
+\[
+	f(n)^2 \leq c^2 g(n) ^2.
+\]
+This clearly implies $f(n)^2=O(g(n)^2)$.
+\end{proof}
+\subsection*{Excercise 3}
+a) Counting the number of addition, we have
+\[
+	f(n) 
+	= \sum_{i=1}^{N-1} \sum_{j=1}^i j = \sum_{i=1}^{N-1} \frac{i^2 + i}{2} 
+	= \frac{1}{2} \left[ \frac{(N-1)N(2N-1)}{6}	+ \frac{N(N-1)}{2}\right]
+\]
+which gives us
+\[
+	f(n) = \frac{N^3}{3} - \frac{N}{3} = \Theta(N^3)
+\]
+
+b) 
+\begin{algorithm}[h]
+  \caption{New algorithm}
+  \SetAlgoNoLine
+  \Indm
+  \Input{$A[:]$}
+  \Output{$B[:, :]$}
+  \Indp 
+  \For{$i\in[1,\dots,n-1]$}{
+	  \For{$j\in[i+1,\dots,n]$}{
+	  	\If{$j==i+1$}{
+	  		$B[i, j] = A[i] + A[j]$
+	  	}\Else{
+	  		$B[i, j] = B[i, j-1] + A[j]$
+	  	}
+	  }	
+  }
+\end{algorithm}
+
+This algorithm has in total
+\[
+	g(n) = \sum_{i=1}^{N-1}i = \frac{N(N-1)}{2}=\Theta(N^2)
+\]
+\subsection*{Excercise 4}
+\textbf{Proof}
+	
+	Consider a tree $T(V, E)$,
+	let $V_b$ be the set of binary nodes and $V_l$ be the set of leaf node. 
+	We will prove by induction on the number of nodes $|V|$.
+
+	For $|V| = 2$, there can be no binary node while the number of leaf node
+	is always 1. Therefore, this is true for this case.
+
+	Assume that for all graphs $|V| = n$, this property holds. We now prove that for
+	any graph with $|V| = (n+1)$, this property also holds. 
+
+	Consider a tree with $n+1$ nodes, we select a leaf node in $V_l$. Its direct
+	parent can be either 1) a binary node or 2) not a binary node. We now remove
+	this leaf node from the original tree $T(V, E)$ to create a new tree $T'(V', E')$.
+	Since $T'$ has n nodes, we know that $|V'_b| = |V'_l| - 1$.
+
+	In case 1), we have $|V'_b| = |V_b| - 1$ and $|V'_l| = |V_l|$ -1 which implies
+	\[
+		|V_b| = |V_l| -1.
+	\]
+
+	In case 2), the number of binary nodes and leaf nodes remain unchanged.
+	Thus, the property holds for any tree with $n+1$ nodes. With this our induction
+	finishes.
+
+\subsection*{Excercise 5}
+
+\textbf{Proof}
+
+	We will show that 
+	\begin{enumerate}
+		\item There is no cross-edges and forward-edges in a DFS 
+	tree of an undirected graph.
+		\item DFS(G, v) = BFS(G, v) = T implies there is no
+	back-edges in the graph returned from DFS.
+	\end{enumerate}
+	  These are sufficient to deduce G=T.
+
+We will now prove 1a): there is no forward-edges in a DFS tree of 
+an undirected graph. 
+Assume the contradiction, there exist a unlabeled edge $(u, v)$ at 
+sometime $t$,
+\[
+	pre(u) < pre(v) < t.
+\]
+Now, since $t$ is when we are have already finish the recursions of
+the childs of $u$ from which one is ancestor of (or is) $v$. We have
+\[
+ 	pre(u) < pre(v) < post(v) < t
+ \] 
+
+It is clear that for a given vertex
+$v$, at a time $t$ larger than $post(v)$, all undirected edges
+connecting to $v$ are all labeled. This gives a contradiction since
+$(u, v)$ is unlabeled at time $t > post(v)$.
+
+The non-existence of cross-edges (1b) can be proved similarly.
+
+
+1a. We will prove by contradition. Assume that there is a back-edge
+in the graph G. This implies there is an unlabeled edge $(u, v)$ 
+such as
+\[
+	pre(v) < pre(u)
+\]
+ 
+Now since T is also a BFS tree, this implies that when $v$ is visited,
+$u$ is already visited or otherwise the edge $(u, v)$ would be in the tree
+and not a forward-edge. This leads to a contradiction because $v$ is an
+ancestor of $u$. 
+
+
+
+
+
+
+
+\end{document}
