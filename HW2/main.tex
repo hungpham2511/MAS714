@@ -16,7 +16,7 @@
 \SetKwFunction{Range}{range}%%
 \SetKw{KwTo}{in}\SetKwFor{For}{for}{\string:}{}%
 \SetKwIF{If}{ElseIf}{Else}{if}{:}{elif}{else:}{}%
-\SetKwFor{While}{while}{:}{fintq}%
+\SetKwFor{While}{while}{:}{}%
 % \renewcommand{\forcond}{$i$ \KwTo\Range{$n$}}
 \AlgoDontDisplayBlockMarkers\SetAlgoNoEnd\SetAlgoNoLine%
 
@@ -54,6 +54,8 @@
 \newcommand{\cO}{\mathcal{O}}
 \newcommand{\bfp}{\mathbf{p}}
 \newcommand{\calT}{\mathcal{T}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
 % acronyms
 \newcommand{\ie}{{\textit{i.e.}}}
 \newcommand{\etal}{\textit{et~al.}}
@@ -118,7 +120,7 @@ Prove that every tree is a bipartite graph.
 	\[
 		R' = R'' \cup \{u\}
 	\]
-	Clearly, these two sets imply that $T'$ is bipartite.	
+	Clearly, this is enough to say that $T'$ is bipartite.	
 \end{proof}
 
 \subsection*{b)}
@@ -126,6 +128,7 @@ Prove that every tree is a bipartite graph.
   \caption{Check for bipartite graph ($G(V, E)$)}
     T = Kruskal($G$) \;
     L, R are bipartite partition of vertices from $T$ \;
+    \TODO{Explain this algorithm in detail} \;
     \For{$(u, v)$ in $E$}{
     	\If{both $u, v$ belongs to L or R}{
     		\Return False
@@ -136,8 +139,50 @@ Prove that every tree is a bipartite graph.
 
 Time complexity: \TODO{}
 
+Kruskal time complexity is $O(m\log m)$
+Bipartite partition took $O(n)$ with BFS (categorised using distance 
+to the root node).
+
+Last check took $O(m)$
+
+Total $O(m \log m + n + m) = O(m \log m + n)$
+
 \begin{proof}
 	\TODO{}
 \end{proof}
+\section*{Excercise 2}
+
+Assume that $X_L[1...n]$ is sorted with $X_L[1]$ being the smallest member.
+
+\begin{algorithm}[h]
+\caption{Find maximum tiling ($X$)}
+	Let $x$ be $-\infty$ \;
+	Initialize $T = \emptyset$\;
+	\While{$X$ is not empty}{
+		\eIf {$X_L[0] > x$}{
+			Let $x_{stop} = X_L[0]$\;
+		}{Let $x_{stop} = x$}
+		Let $x_{max} = -\infty$\;
+		\While{$X_L[0] \leq x_{stop}$}{
+			\If {$X_R[0] > x_{max}$}{
+				$x_{max} = X_R[0]$\;
+				Select $X[0]$ as the chosen interval $i$\;
+			}
+			Remove $X[0]$ from $X$\;
+		}
+		Add the selected interval $i$ to $T$\;
+		% Let $O$ be the set of interval such that $X_L[i] \leq x$\;
+		% \If {$O == \emptyset$}{
+		% 	Let $O$ be the set of interval such that $X_L[i] == X_L[0]$\;
+		% }
+		% Let $X = X \setminus O$\;
+		% Sort $O$ according to the right end point\;
+		% Let $y = \argmax_{i \in O} i_R$\;
+		% Let $T = T\cup\{y\}$\;
+		% Let $x = y_R$\;
+	}
+	\Return $T$\;
+\end{algorithm}
+Running time $O(n)$.
 
 \end{document}
