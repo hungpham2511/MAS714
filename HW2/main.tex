@@ -1,0 +1,143 @@
+\documentclass[a4paper,10pt,twoside]{article}
+\pdfoutput=1 
+
+\usepackage{amssymb,amsmath}       % Equations
+\usepackage{array}
+\usepackage{bm}                    % Bold math symbols
+\usepackage{epsfig}
+\usepackage{float}
+\usepackage{graphicx,color,psfrag} % Graphics, Figures
+\usepackage{multirow}              % For Tables
+\usepackage{tabularx}              % Tables
+\usepackage{wrapfig}
+\usepackage[algoruled]{algorithm2e}
+\SetStartEndCondition{ }{}{}%
+\SetKwProg{Fn}{def}{\string:}{}
+\SetKwFunction{Range}{range}%%
+\SetKw{KwTo}{in}\SetKwFor{For}{for}{\string:}{}%
+\SetKwIF{If}{ElseIf}{Else}{if}{:}{elif}{else:}{}%
+\SetKwFor{While}{while}{:}{fintq}%
+% \renewcommand{\forcond}{$i$ \KwTo\Range{$n$}}
+\AlgoDontDisplayBlockMarkers\SetAlgoNoEnd\SetAlgoNoLine%
+
+
+%% enumitem 
+% \labelindent is defined in both IEEEtrans and
+% enumitem. \let\labelindent\relax kind-of disables \labelindent
+% defined in IEEEtrans, hence avoiding the name clash.
+\let\labelindent\relax
+\usepackage[inline]{enumitem}
+
+%% algorithm2e
+% \usepackage[plain]{algorithm2e}
+% remove line number for one line
+% \let\oldnl\nl
+% \newcommand{\nonl}{\renewcommand{\nl}{\let\nl\oldnl}}
+
+%% subfigure
+\usepackage[caption=false,font=footnotesize]{subfig}
+% make references to subfigures appear as \thefigure(\thesubfigure)
+\captionsetup[subfigure]{subrefformat=simple,labelformat=simple,listofformat=subsimple}
+\renewcommand\thesubfigure{(\alph{subfigure})}
+
+% variables
+\newcommand{\mc}[2][]{{\mathcal{#2}_{\textrm{#1}}}}
+\newcommand{\q}[1]{\bm{q}_{\textrm{#1}}}
+\newcommand{\qd}[1]{\bm{\dot{q}}_{\textrm{#1}}}
+\newcommand{\T}[1]{\bm{T}_{\textrm{#1}}}
+\newcommand{\x}[1]{\bm{x}_{\textrm{#1}}}
+\newcommand{\qvect}{\bm{q}}
+\newcommand{\Tvect}{\bm{T}}
+\newcommand{\GP}{\mathcal{G}\cap\mathcal{P}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cO}{\mathcal{O}}
+\newcommand{\bfp}{\mathbf{p}}
+\newcommand{\calT}{\mathcal{T}}
+% acronyms
+\newcommand{\ie}{{\textit{i.e.}}}
+\newcommand{\etal}{\textit{et~al.}}
+
+% theorem environment
+\newtheorem{theorem}{Theorem}
+\newtheorem{proof}{Proof}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{remark}{Remark}
+% TODO
+\newcommand{\TODO}[1]{\noindent {\color{red} \{{\bf To-do:} #1\}}}
+% COMMENT
+\newcommand{\comment}[1]{}
+
+% change tt font
+\renewcommand{\tt}{\fontfamily{cmtt}\selectfont}
+
+% figures path
+\graphicspath{{figures/}}
+
+% \overrideIEEEmargins
+% set margins
+\setlength{\floatsep}{2pt plus 1pt minus 1pt}
+\setlength{\textfloatsep}{5pt plus 1pt minus 2pt}
+
+%% TITLE
+\title{MAS714-Homework 2}
+%% AUTHOR
+\author{Pham Tien Hung, Zhang Xu
+}
+
+%% DATE
+\date{}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle
+\section*{Excercise 1}
+\subsection*{a)}
+Prove that every tree is a bipartite graph.
+\begin{proof}
+	We will prove by induction, that is very tree $T(V, E)$ whose
+	$|V| = n$ for all $n$ is a bipartite graph. The case $n=2$ is trivially true.
+
+	Assume that this is true for $|V| = n$, we will now prove that it
+	is true for every tree $T'$ whose $|V'| = n + 1$. 
+
+	Consider one such tree $T'$ with $|V'| = n + 1$, we select a leaf node $u$
+	and remove it from $T'$ creating $T''$. Clearly, $|V''| = n$ and
+	therefore $T''$ is now a bipartite graph. Let $L''$ and $R''$ be the
+	corresponding bipartite set of the tree $T''$.
+
+	Without loss of generality, assume that the node $u$ connects to
+	some node $v$ belonging to $L''$, we construct two new set $L'$
+	and $R'$:
+	\[
+		L' = L''
+	\]
+	\[
+		R' = R'' \cup \{u\}
+	\]
+	Clearly, these two sets imply that $T'$ is bipartite.	
+\end{proof}
+
+\subsection*{b)}
+\begin{algorithm}[h]
+  \caption{Check for bipartite graph ($G(V, E)$)}
+    T = Kruskal($G$) \;
+    L, R are bipartite partition of vertices from $T$ \;
+    \For{$(u, v)$ in $E$}{
+    	\If{both $u, v$ belongs to L or R}{
+    		\Return False
+    	}
+    }
+    \Return True
+\end{algorithm}
+
+Time complexity: \TODO{}
+
+\begin{proof}
+	\TODO{}
+\end{proof}
+
+\end{document}
