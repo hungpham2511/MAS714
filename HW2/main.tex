@@ -97,7 +97,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 \maketitle
-\section*{Excercise 1}
+\section*{Exercise 1}
 \subsection*{a)}
 Prove that every tree is a bipartite graph.
 \begin{proof}
@@ -151,7 +151,7 @@ Total $O(m \log m + n + m) = O(m \log m + n)$
 \begin{proof}
 	\TODO{}
 \end{proof}
-\section*{Excercise 2}
+\section*{Exercise 2}
 
 Assume that $X_L[1...n]$ is sorted with $X_L[1]$ being the smallest member.
 
@@ -186,7 +186,7 @@ Assume that $X_L[1...n]$ is sorted with $X_L[1]$ being the smallest member.
 \end{algorithm}
 Running time $O(n)$.
 
-\section*{Excercise 3}
+\section*{Exercise 3}
 
 \subsection*{a}
 Not all Minimum Bottleneck Tree (MBT) is a MST. Here is an counter example:
@@ -226,7 +226,13 @@ tree (MST) then it is also a minimum-bottleneck tree (MBT) of $G$.
 	the corresponding cut $(S'_i, V\setminus S'_i)$. If $e'_i$ is a safe
 	edge, then it is left unchanged else it is replaced with the safe edge
 	crossing the cut $(S'_i, V\setminus S'_i)$.
+	After any iteration $j$, the following hold:
+	\begin{enumerate}
+		\item The modified tree remains a spanning tree.
+		\item All modifed edges $e'_1, ..., e'_j$ are safe edges.
+	\end{enumerate}
 
+	Both implies that after the operation, the modifed tree is an MST.
 	Denoting the new tree $T''$, since the set of safe edges form the unique
 	minimum spanning tree under the condition of distinct edge cost, clealy
 	$T''$ is the unique MST of $G$. Therefore, $T'' = T'$.
@@ -241,9 +247,25 @@ tree (MST) then it is also a minimum-bottleneck tree (MBT) of $G$.
 	\begin{aligned}
 		\max_i e''_i &\leq \max_i e'_i \\
 					 &< \max_i e_i\\
-					 &< \max_i e''_i\\
+					 &< \max_i e''_i\\,
 	\end{aligned}
 	\]
-	This is clearly a contradition.
+	which is clearly a contradition.
 \end{proof}
+\section*{Exercise 4}
+\subsection*{a}
+Do DFS on the spanning tree, find the shortest path between $u, v$.
+Check if all the edges connecting this path has weight lower than $c$.
+If true, then $T$ is no longer the MST, else it is.
+
+Complexity $O(n)$.
+
+\subsection*{b}
+Just go over each edge and fix them individually.
+
+
+\section*{Exercise 5}
+\subsection*{a}
+
+Take log of each edge weight then do shortest path.
 \end{document}
