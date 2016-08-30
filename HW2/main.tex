@@ -7,6 +7,7 @@
 \usepackage{epsfig}
 \usepackage{float}
 \usepackage{graphicx,color,psfrag} % Graphics, Figures
+\usepackage{tikz}
 \usepackage{multirow}              % For Tables
 \usepackage{tabularx}              % Tables
 \usepackage{wrapfig}
@@ -185,4 +186,64 @@ Assume that $X_L[1...n]$ is sorted with $X_L[1]$ being the smallest member.
 \end{algorithm}
 Running time $O(n)$.
 
+\section*{Excercise 3}
+
+\subsection*{a}
+Not all Minimum Bottleneck Tree (MBT) is a MST. Here is an counter example:
+
+\begin{figure}[h]
+	\centering
+\begin{tikzpicture}
+	\path 	(0, 2) node[circle, radius=2.5pt, draw] (a) {a}
+			(2, 2) node[circle, radius=2.5pt, draw] (b) {b}
+			(0, 0) node[circle, radius=2.5pt, draw] (c) {c};
+	\draw (a) 
+				-- node[above] {2} (b) 
+				-- node[below] {2} (c) 
+				-- node[left] {1} (a);
+\end{tikzpicture}
+	\label{fig:figure1}
+\end{figure}
+The tree containing two edges $(a, b), (b, c)$ is an MBT but is clearly
+not a MST.
+
+\subsection*{b}
+We will show that given an undirect graph $G$ with distinct edge
+cost, if $T$ is $G$'s minimum spanning
+tree (MST) then it is also a minimum-bottleneck tree (MBT) of $G$.
+\begin{proof}
+	We will prove by contradition. That is, let $T$ be an MST of $G$,
+	there must exist a spanning tree $T'$ whose maximum edge cost
+	being smaller than the maximum edge cost of $T$.
+	Let $e_i$ and $e'_i$ denote the edges of $T$ and $T'$ respectively.
+	This means
+	\[
+		\max_i{e'_i} < \max_i{e_i}.
+	\]
+
+	Now, we modify the tree $T'$ to by iteratively
+	loop through each edge $e'_i$ and check if it is a safe edge crossing
+	the corresponding cut $(S'_i, V\setminus S'_i)$. If $e'_i$ is a safe
+	edge, then it is left unchanged else it is replaced with the safe edge
+	crossing the cut $(S'_i, V\setminus S'_i)$.
+
+	Denoting the new tree $T''$, since the set of safe edges form the unique
+	minimum spanning tree under the condition of distinct edge cost, clealy
+	$T''$ is the unique MST of $G$. Therefore, $T'' = T'$.
+
+	In the operation, we only replace an edge $e'_j$ if it is not a safe edge,
+	this means cost of all edges can only decrease. This means:
+	\[
+		e''_j \leq e'_j, \forall j
+	\]
+	which implies
+	\[
+	\begin{aligned}
+		\max_i e''_i &\leq \max_i e'_i \\
+					 &< \max_i e_i\\
+					 &< \max_i e''_i\\
+	\end{aligned}
+	\]
+	This is clearly a contradition.
+\end{proof}
 \end{document}
