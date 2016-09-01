@@ -280,12 +280,18 @@ We first state three propositions.
 Sorting takes time $O(n \log n)$; each tile is iterated through exactly once, thus the while loop
 takes $O(n)$.
 Total $O(n \log n)$.
-\subsubsection*{Proof of correctness}
-To show that Algorithm 2 is correct, we need to show two things:
-\begin{enumerate}
-	\item The set returned from Algorithm 2 is a tiling set.
-	\item There exist no other tiling set with less number of tiles.
-\end{enumerate}
+
+\begin{proof}
+	Feasibility: The algorithm chooses interval that has the largest right endpoint and overlaps with 		its preceding interval. Clearly it will return a tiling path.
+	Optimality: Assume by contradiction that the greedy algorithm is not optimal.
+	Let $i_{1}, i_{2}, . . . , i_{k}$ denote set of intervals selected by the algorithm.
+	Let $j_{1}, j_{2}, . . . , j_{m}$ denote set of intervals in an optimal solution with 
+	$i_{1} = j_{1}, i_{2} = j_{2}, . . . , i_{r} = j_{r}$ for the largest possible value of $r$.
+	Replace interval $j_{r+1}$ with interval $i_{r+1}$. Since interval $i_{r+1}$ exists and has larger 			right endpoint than $j_{r+1}$, the new solution is still feasible and optimal. 
+	Thus maximality of $r$ is contradicted.
+
+\end{proof}
+
 \section*{Exercise 3}
 
 \subsection*{a}
