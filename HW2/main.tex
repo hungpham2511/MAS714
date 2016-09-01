@@ -1,22 +1,27 @@
 \documentclass[a4paper,10pt,twoside]{article}
 \pdfoutput=1 
-\usepackage[bookmarks=true]{hyperref}
 
-\usepackage{bookmark}
-\bookmarksetup{
-  numbered, 
-  open,
-}
+%\usepackage[bookmarks=true]{hyperref}
+
+%\usepackage{bookmark}
+%\bookmarksetup{
+%  numbered, 
+%  open,
+%}
 
 
 \usepackage{todonotes}
+
 \usepackage{amssymb,amsmath}       % Equations
 \usepackage{array}
 \usepackage{bm}                    % Bold math symbols
 \usepackage{epsfig}
 \usepackage{float}
 \usepackage{graphicx,color,psfrag} % Graphics, Figures
+\usepackage[export]{adjustbox}
+\usepackage{subcaption}
 \usepackage{tikz}
+
 \usepackage{multirow}              % For Tables
 \usepackage{tabularx}              % Tables
 \usepackage{wrapfig}
@@ -248,7 +253,6 @@ We first state three propositions.
 
 \section*{Exercise 2}
 
-Assume that the indices of both $X_L$ and $X_R$ start with 0. 
 \begin{algorithm}[h]
 \caption{Find maximum tiling ($X_L, X_R$)}
 	Sort both $X_L$ increasingly\;
@@ -288,20 +292,27 @@ To show that Algorithm 2 is correct, we need to show two things:
 Not all Minimum Bottleneck Tree (MBT) is a MST. Here is a counter example:
 
 \begin{figure}[h]
-	\centering
-\begin{tikzpicture}
-	\path 	(0, 2) node[circle, radius=2.5pt, draw] (a) {a}
-			(2, 2) node[circle, radius=2.5pt, draw] (b) {b}
-			(0, 0) node[circle, radius=2.5pt, draw] (c) {c};
-	\draw (a) 
-				-- node[above] {2} (b) 
-				-- node[below] {2} (c) 
-				-- node[left] {1} (a);
-\end{tikzpicture}
-	\label{fig:figure1}
+ 
+\begin{subfigure}{0.3\textwidth}
+\includegraphics[width=0.9\linewidth, height=3cm]{G} 
+\caption{G}
+\label{fig:subim1}
+\end{subfigure}
+\begin{subfigure}{0.3\textwidth}
+\includegraphics[width=0.9\linewidth, height=3cm]{MST}
+\caption{MST}
+\label{fig:subim2}
+\end{subfigure}
+ \begin{subfigure}{0.3\textwidth}
+\includegraphics[width=0.9\linewidth, height=3cm]{MBST}
+\caption{MBST}
+\label{fig:subim3}
+\end{subfigure}
+
+
 \end{figure}
-The tree containing two edges $(a, b), (b, c)$ is an MBT but is clearly
-not a MST.
+
+Take the connected graph G in (a) as an example. (b) presents its minimum spanning tree (MST) and (c) is one minimum-bottleneck spanning tree (MBT) of G, which is clearly different from MST. 
 
 \subsection*{b}
 \begin{proposition}
