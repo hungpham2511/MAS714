@@ -239,9 +239,11 @@ The tree containing two edges $(a, b), (b, c)$ is an MBT but is clearly
 not a MST.
 
 \subsection*{b}
+\begin{proposition}
 We will show that given an undirect graph $G$ with distinct edge
 cost, if $T$ is $G$'s minimum spanning
-tree (MST) then it is also a minimum-bottleneck tree (MBT) of $G$.
+tree (MST) then it is also a minimum-bottleneck tree (MBT) of $G$.	
+\end{proposition}
 \begin{proof}
 	We will prove by contradition. That is, let $T$ be an MST of $G$,
 	there must exist a spanning tree $T'$ whose maximum edge cost
@@ -267,49 +269,76 @@ tree (MST) then it is also a minimum-bottleneck tree (MBT) of $G$.
 \end{proof}
 \section*{Exercise 4}
 \subsection*{a}
-\todo{Write up algorithm, analysis and proof for Ex 4a}
 
-Do DFS on the spanning tree, find the path between $u, v$.
-Check if all the edges connecting this path has weight lower than $c$.
-If true, then $T$ is no longer the MST, else it is.
+\begin{algorithm}[H]
+	\caption{Check for MST($G, T, c$)}
+	Let $P=(e_1, ..., e_n)$ be the cycle computed with DFS($T \cup \{c\}$)\;
+	\eIf{$c$ is the edge with largest cost in $P$}{
+		\Return False \tcp*{$T$ remains the MST}
+	}
+	{
+		\Return True \tcp*{$T$ does not remain the MST}
+	}
 
-Proof?.
+\end{algorithm}
 
-Complexity $O(n)$.
+Complexity $O(n)$ since it is dominated by DFS algorithm.
 
 \subsection*{b}
-\todo{Write up algorithm, analysis and proof for Ex 4b}
-Find cycle in the new tree $T\cup \{c\}$
+\begin{algorithm}[H]
+	\caption{Fix MST($G, T, c$)}
+	Let $P=(e_1, ..., e_n)$ be the cycle computed with DFS($T \cup \{c\}$)\;
+	Let $e_m = \max_{i\in P} e_i$\;
+	\Return $T \cup \{c\} \setminus \{e_m\}$ 
 
-This cycle will contains $c$ and some other edge $e_j, ..., e_k$.
+\end{algorithm}
 
-Find the edge with the largest cost. 
-
-Return it.
+Complexity $O(n)$ since it is dominated by DFS algorithm.
 
 
 \begin{proposition}
 	Let $T$ be the MST of $G(V, E)$, assuming we add a new edge $c$ to $G(V, E)$, the
-	MST $T'$ of the modified graph must be a subset of $T\cup \{c\}$.
+	MST of the modified graph must be a subset of $T\cup \{c\}$.
 \end{proposition}
+\begin{proof}
+	We will prove by contradiction. That is the MST of the modified graph contain some $e_i$ which
+	does not belong to $T \cup \{c\}$. Suppose $e_i$ is the safe edge crossing some cut 
+	$(S, V\setminus S)$ of the graph $G'(V, E \cup \{c\})$. Suppose $e_j$ is the safe edge
+	crossing $(S, V\setminus S)$ of the graph $G(V, E)$. Clearly:
+	\[
+		e_i \neq e_j, e_i \neq c
+	\]
 
+	Now, let $E(S, V\setminus S)$ and $E'(S, V\setminus S)$ be the set of edges crossing
+	the said cut in two graphs $G$ and $G'$ respectively. There are only two cases: 
+	1) 
+	$$E'(S, V\setminus S)=E(S, V\setminus S) \cup \{c\}$$ and 2) 
+	$$E'(S, V\setminus S)=E(S, V\setminus S)$$
+	In both case, $e_i \neq e_j, e_i \neq c$
+	lead to contradition.
+
+\end{proof}
 
 \begin{proposition}
-	If $T$ is the MST of $G(V, E)$, then $T$ is also the MST of $G'(V', E')$ such that
-	\[
-		T \subseteq E' \subseteq E
-	\]
+	Let $T$ be the MST of $G(V, E)$. Suppose we remove some edges which do not belong
+	to $T$ from $G$, then $T$ is also the MST of the modified graph.
 \end{proposition}
+\begin{proof}
+	We will prove this by showing that every safe edge of $G$ must also be a safe edge
+	of the modifed graph $G'$. Clearly, let's assume $e_i$ is a safe edge of $G$ crossing a cut
+	$(S, V\setminus S)$. Since we do not remove safe edge from $G$ to create $G'$, clearly
+	$e_i$ also crosses the same cut in the modifed graph $G'$. This implies $e_i$ is also
+	a safe edge of $G'$.
+\end{proof}
 
 
 \section*{Exercise 5}
-\todo{algorithm, analysis and proof for Ex 5}
 \begin{algorithm}[H]
 	\caption{Algorithm($G(V, E)$)}
 	Initialize new set of vertices $V' = V$\;
 	Initialize new set of edges $E' = \emptyset$\; 
 	\For{$e_i$ in $E$}{
-		add new edge $e'_i = -\log e_i$ to $E'$
+		add new edge $e'_i = -\log (1 - e_i)$ to $E'$
 	}
 	\Return Dijkstra($G'$)
 \end{algorithm}
@@ -319,5 +348,32 @@ This algorithm complexity is basically the same as Dijkstra, which is
 $$O((n + m)\log n)$$
 
 \subsubsection*{Proof of correctness}
+We will show that if a set of edge $(e_1, e_2, ..., e_k)$ has the lowest
+negated logarithmic cost then they have the least chance of at least
+one edge failed.
 
+Additionally, it is remarked that the negated logarithmic cost is always
+positive. This ensures Dijkstra works correctly.
+
+\begin{proof}
+	Given some edge $(e_i,...)$, let the chance of having at least one failure
+	be $R_f$ and the chance of all edge success be $R_s$, we have:
+	\[
+	 	R_f + R_s = 1
+	 \] 
+	 where $R_s = \prod_i{1-e_i}$.
+
+	 Since $P = \{e_i,...\}$ has the lowest negated log cost, for any 
+	 other path $P' = \{e_j,...\}$
+	 we have the following
+	 \[
+	 	\begin{aligned}
+	 		- \sum_{e_i \in P}{\log{(1 - e_i)}} &\leq - \sum_{e_i \in P'}{\log{(1 - e_i)}} \\
+	 		\sum_{e_i \in P}{\log{(1 - e_i)}} &\geq \sum_{e_i \in P'}{\log{(1 - e_i)}} \\
+	 		\prod_{e_i \in P}{(1 - e_i)} &\geq \prod_{e_i \in P'}{(1 - e_i)} \\
+	 		R_s(P) & \geq R_s(P') \\
+	 		R_f(P) & \leq R_f(P') \\
+	 	\end{aligned}
+	 \]
+\end{proof}
 \end{document}
