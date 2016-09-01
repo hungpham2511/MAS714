@@ -1,6 +1,15 @@
 \documentclass[a4paper,10pt,twoside]{article}
 \pdfoutput=1 
+\usepackage[bookmarks=true]{hyperref}
 
+\usepackage{bookmark}
+\bookmarksetup{
+  numbered, 
+  open,
+}
+
+
+\usepackage{todonotes}
 \usepackage{amssymb,amsmath}       % Equations
 \usepackage{array}
 \usepackage{bm}                    % Bold math symbols
@@ -97,6 +106,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 \maketitle
+\listoftodos[Notes]
+
 \section*{Exercise 1}
 \subsection*{a)}
 Prove that every tree is a bipartite graph.
@@ -125,32 +136,48 @@ Prove that every tree is a bipartite graph.
 \end{proof}
 
 \subsection*{b)}
-\begin{algorithm}[h]
-  \caption{Check for bipartite graph ($G(V, E)$)}
-    T = Kruskal($G$) \;
-    L, R are bipartite partition of vertices from $T$ \;
-    \TODO{Explain this algorithm in detail} \;
-    \For{$(u, v)$ in $E$}{
-    	\If{both $u, v$ belongs to L or R}{
-    		\Return False
-    	}
-    }
-    \Return True
+\begin{algorithm}[H]
+	\caption{Check for bipartite graph ($G(V, E)$)}
+	$T$, $BE$ = DFS(G) \tcp*{$BE$ is the list of back edges}
+	Let bipartite = True\;
+	\For{edge $(u, v)$ in $BE$}{
+		\If{$\|pre(v) - pre(u)\|$ is even}{
+			bipartite = False \tcp*{The cycle containing $(u, v)$ has odd number of edges}
+		}
+	}
+	\Return bipartite
 \end{algorithm}
+\subsubsection*{Analysis of complexity}
+The algorithm is essentially the same as DFS, therefore its complexity is $O(n + m)$.
 
-Time complexity: \TODO{}
+\subsubsection*{Proof of correctness}
+We first state three propositions.
+\todo{Write the proofs for these three propositions Ex 1}
+\begin{proposition}
+	Given a graph $G$, G is bipartite iff any cycles in $G$ have even number of
+	edges.
+\end{proposition}
 
-Kruskal time complexity is $O(m\log m)$
-Bipartite partition took $O(n)$ with BFS (categorised using distance 
-to the root node).
+\begin{proposition} 
+	Given a graph $G(V, E)$, if all cycles discovered by DFS
+	have even number of edges then all cycles in $G$ have even number of edges.
+\end{proposition}
 
-Last check took $O(m)$
+\begin{proposition}
+	Given a graph $G(V, E)$, let us apply DFS on $G$. Considering a back-edge $(u, v)$, then
+	$\|pre(v) - pre(u)\|$ is odd iff the number of edges in the cycle discovered by DFS is even. 
+\end{proposition}
 
-Total $O(m \log m + n + m) = O(m \log m + n)$
+\begin{proposition}
+	Algorithm 1 is correct.
+\end{proposition}
 
 \begin{proof}
-	\TODO{}
+	The three propositions 
 \end{proof}
+
+
+
 \section*{Exercise 2}
 
 Assume that $X_L[1...n]$ is sorted with $X_L[1]$ being the smallest member.
@@ -184,12 +211,16 @@ Assume that $X_L[1...n]$ is sorted with $X_L[1]$ being the smallest member.
 	}
 	\Return $T$\;
 \end{algorithm}
-Running time $O(n)$.
 
+\subsubsection*{Analysis}
+Running time $O(n)$.
+\todo{Analyze exercise 2's algorithm}
+\subsubsection*{Proof of correctness}
+\todo{Complete the proof for exercise 2}
 \section*{Exercise 3}
 
 \subsection*{a}
-Not all Minimum Bottleneck Tree (MBT) is a MST. Here is an counter example:
+Not all Minimum Bottleneck Tree (MBT) is a MST. Here is a counter example:
 
 \begin{figure}[h]
 	\centering
@@ -221,51 +252,72 @@ tree (MST) then it is also a minimum-bottleneck tree (MBT) of $G$.
 		\max_i{e'_i} < \max_i{e_i}.
 	\]
 
-	Now, we modify the tree $T'$ to by iteratively
-	loop through each edge $e'_i$ and check if it is a safe edge crossing
-	the corresponding cut $(S'_i, V\setminus S'_i)$. If $e'_i$ is a safe
-	edge, then it is left unchanged else it is replaced with the safe edge
-	crossing the cut $(S'_i, V\setminus S'_i)$.
-	After any iteration $j$, the following hold:
-	\begin{enumerate}
-		\item The modified tree remains a spanning tree.
-		\item All modifed edges $e'_1, ..., e'_j$ are safe edges.
-	\end{enumerate}
-
-	Both implies that after the operation, the modifed tree is an MST.
-	Denoting the new tree $T''$, since the set of safe edges form the unique
-	minimum spanning tree under the condition of distinct edge cost, clealy
-	$T''$ is the unique MST of $G$. Therefore, $T'' = T'$.
-
-	In the operation, we only replace an edge $e'_j$ if it is not a safe edge,
-	this means cost of all edges can only decrease. This means:
+	Let the maximum edge of $T$ be $e_j$, we thus have
 	\[
-		e''_j \leq e'_j, \forall j
+		\forall i, e'_i < e_j.
 	\]
-	which implies
+
+	Now consider the cut $(S, V\setminus S)$ that $e_j$ is the corresponding
+	safe edge, there must exist an edge $e'_j$ in $T'$ that also crosses $(S, V\setminus S)$.
+	We thus have
 	\[
-	\begin{aligned}
-		\max_i e''_i &\leq \max_i e'_i \\
-					 &< \max_i e_i\\
-					 &< \max_i e''_i\\,
-	\end{aligned}
+		e'_j < e_j \leq e'_j
 	\]
 	which is clearly a contradition.
 \end{proof}
 \section*{Exercise 4}
 \subsection*{a}
+\todo{Write up algorithm, analysis and proof for Ex 4a}
+
 Do DFS on the spanning tree, find the path between $u, v$.
 Check if all the edges connecting this path has weight lower than $c$.
 If true, then $T$ is no longer the MST, else it is.
 
+Proof?.
+
 Complexity $O(n)$.
 
 \subsection*{b}
-Just go over each edge and fix them individually.
+\todo{Write up algorithm, analysis and proof for Ex 4b}
+Find cycle in the new tree $T\cup \{c\}$
+
+This cycle will contains $c$ and some other edge $e_j, ..., e_k$.
+
+Find the edge with the largest cost. 
+
+Return it.
+
+
+\begin{proposition}
+	Let $T$ be the MST of $G(V, E)$, assuming we add a new edge $c$ to $G(V, E)$, the
+	MST $T'$ of the modified graph must be a subset of $T\cup \{c\}$.
+\end{proposition}
+
+
+\begin{proposition}
+	If $T$ is the MST of $G(V, E)$, then $T$ is also the MST of $G'(V', E')$ such that
+	\[
+		T \subseteq E' \subseteq E
+	\]
+\end{proposition}
 
 
 \section*{Exercise 5}
-\subsection*{a}
+\todo{algorithm, analysis and proof for Ex 5}
+\begin{algorithm}[H]
+	\caption{Algorithm($G(V, E)$)}
+	Initialize new set of vertices $V' = V$\;
+	Initialize new set of edges $E' = \emptyset$\; 
+	\For{$e_i$ in $E$}{
+		add new edge $e'_i = -\log e_i$ to $E'$
+	}
+	\Return Dijkstra($G'$)
+\end{algorithm}
 
-Take log of each edge weight then do shortest path.
+\subsubsection*{Analysis}
+This algorithm complexity is basically the same as Dijkstra, which is 
+$$O((n + m)\log n)$$
+
+\subsubsection*{Proof of correctness}
+
 \end{document}
