@@ -110,7 +110,9 @@
 
 \section*{Exercise 1}
 \subsection*{a)}
-Prove that every tree is a bipartite graph.
+\begin{proposition}
+Every tree is a bipartite graph.
+\end{proposition}
 \begin{proof}
 	We will prove by induction, that is very tree $T(V, E)$ whose
 	$|V| = n$ for all $n$ is a bipartite graph. The case $n=2$ is trivially true.
@@ -152,28 +154,94 @@ The algorithm is essentially the same as DFS, therefore its complexity is $O(n +
 
 \subsubsection*{Proof of correctness}
 We first state three propositions.
-\todo{Write the proofs for these three propositions Ex 1}
 \begin{proposition}
-	Given a graph $G$, G is bipartite iff any cycles in $G$ have even number of
+	Given a connected graph $G$, $G$ is bipartite iff any cycles in $G$ have even number of
 	edges.
 \end{proposition}
+\begin{proof}
+	The first direction is trivial. If $G$ is bipartite, then every cycle in $G$
+	must have even number of edges. 
 
+	To see this is true, assume the contradition,
+	that is there exists a cycle with odd number of edge: $v_1,...,v_n$ for $n$ odd. 
+	Since every odd number vertex is connected with an even number vertex, we must
+	separate the vertices into odd-set and even-set. However, $v_1$ and $v_n$ also connects
+	which implies that $G$ is not bipartite.
+
+	Now, we must show that if every cycle in $G$ has even number of edge, then $G$ is
+	bipartite. 
+	To do this, we first find a spanning tree $T$ from $G$ using DFS; then, we divide $T$
+	into two set $R$ and $L$. Then we will show that all edges in the set of back edges
+	$E\setminus T$ connects one vertex in $R$ and one vertex in $L$.
+
+	Consider one such back edge $(u, v)$, assuming we add this edge into the tree $T$.
+	Clearly, we will obtain a cycle with even number
+	of edges $u, v_1, v_2, ..., v_n, v$ in $T \cup \{(u, v)\}$. Now, assuming w.l.g that
+	$u\in R$, clearly $v_1 \in L$ and so on, which will lead to $v \in L$ due to eveness
+	of the number of vertices/edges.
+
+	Repeat this procedure for all edges in $E\setminus T$. The proof follows.
+
+
+
+\end{proof}
 \begin{proposition} 
 	Given a graph $G(V, E)$, if all cycles discovered by DFS
 	have even number of edges then all cycles in $G$ have even number of edges.
 \end{proposition}
+\begin{proof}
+	To prove this proposition, we first define a notion of combining cycle with cycle.
+	Assuming we have two cycles with a common sequence of vertices
+	\[
+		v_i,...,v_j,v_a,...,v_b,v_k,...,v_i
+	\]
+	\[
+		v'_i,...,v'_j,v_a,...,v_b,v'_k,...,v'_i	
+	\]
+	where $v_a, ..., v_b$ is the same for both cycle. We can then form a new cycle
+	\[
+		v_i,...,v_j,v_a,v'_j,...,v'_i,...,v'_k,v_b,v_k,...,v_i	
+	\]
 
+	It is trivial to show that two cycles with even number of edges combine to form a cycle
+	with even number of edge. Another thing to note is that in the new cycle, the edges
+	between $v_a,...,v_b$ are deleted.
+
+	Additionally, if two cycles are exactly the same, then their combination is the the empty set $\emptyset$.
+
+	Now we will prove the main proposition by contradition. That is, suppose all cycles found
+	by DFS have even number of edges, there exist a cycle with odd number of edges. Let this cycle
+	be $C_o$, $C_o$ must contains some back edges, otherwise it will not be a cycle. We combine
+	$C_o$ with the cycles corresponding to the back edges which $C_o$ has. At the moment when 
+	$C_o$ consists of only one back edge, its number of edge is odd. We now combine $C_o$ with
+	the cycle (found with DFS) containing the last back edge to form yet another cycle. This cycle
+	does not contains any back edge.
+
+	Note that this combination can't become $\emptyset$ because $C_o$ and 
+	the last cycle are different (one has odd, one has even number of edge).
+
+	Having a cycle without any back edge leads to a contradition.
+
+\end{proof}
 \begin{proposition}
 	Given a graph $G(V, E)$, let us apply DFS on $G$. Considering a back-edge $(u, v)$, then
 	$\|pre(v) - pre(u)\|$ is odd iff the number of edges in the cycle discovered by DFS is even. 
 \end{proposition}
+\begin{proof}
+	To show that this is correct, we simply note that in a DFS tree, if $v$ is the direct child
+	of $u$ then $$(pre(v) - pre(u))$$ is always odd.
 
+	Now, we construct a cycle from a DFS tree by going to one node's direct parent, therefore
+	it is clearly that for all nodes in a cycle discovered by DFS the above relationship holds.
+
+	The proof follows simply.
+\end{proof}
 \begin{proposition}
 	Algorithm 1 is correct.
 \end{proposition}
 
 \begin{proof}
-	The three propositions 
+	The proof follows from the three above proposition via direct equivalences.
 \end{proof}
 
 
@@ -268,35 +336,8 @@ tree (MST) then it is also a minimum-bottleneck tree (MBT) of $G$.
 	which is clearly a contradition.
 \end{proof}
 \section*{Exercise 4}
-\subsection*{a}
-
-\begin{algorithm}[H]
-	\caption{Check for MST($G, T, c$)}
-	Let $P=(e_1, ..., e_n)$ be the cycle computed with DFS($T \cup \{c\}$)\;
-	\eIf{$c$ is the edge with largest cost in $P$}{
-		\Return False \tcp*{$T$ remains the MST}
-	}
-	{
-		\Return True \tcp*{$T$ does not remain the MST}
-	}
-
-\end{algorithm}
-
-Complexity $O(n)$ since it is dominated by DFS algorithm.
-
-\subsection*{b}
-\begin{algorithm}[H]
-	\caption{Fix MST($G, T, c$)}
-	Let $P=(e_1, ..., e_n)$ be the cycle computed with DFS($T \cup \{c\}$)\;
-	Let $e_m = \max_{i\in P} e_i$\;
-	\Return $T \cup \{c\} \setminus \{e_m\}$ 
-
-\end{algorithm}
-
-Complexity $O(n)$ since it is dominated by DFS algorithm.
-
-
 \begin{proposition}
+\label{prop:4-1}
 	Let $T$ be the MST of $G(V, E)$, assuming we add a new edge $c$ to $G(V, E)$, the
 	MST of the modified graph must be a subset of $T\cup \{c\}$.
 \end{proposition}
@@ -320,6 +361,7 @@ Complexity $O(n)$ since it is dominated by DFS algorithm.
 \end{proof}
 
 \begin{proposition}
+\label{prop:4-2}
 	Let $T$ be the MST of $G(V, E)$. Suppose we remove some edges which do not belong
 	to $T$ from $G$, then $T$ is also the MST of the modified graph.
 \end{proposition}
@@ -329,6 +371,68 @@ Complexity $O(n)$ since it is dominated by DFS algorithm.
 	$(S, V\setminus S)$. Since we do not remove safe edge from $G$ to create $G'$, clearly
 	$e_i$ also crosses the same cut in the modifed graph $G'$. This implies $e_i$ is also
 	a safe edge of $G'$.
+\end{proof}
+
+
+\subsection*{a}
+
+\begin{algorithm}[H]
+	\caption{Check for MST($G, T, c$)}
+	Let $P=(e_1, ..., e_n)$ be the cycle computed with DFS($T \cup \{c\}$)\;
+	\eIf{$c$ is the edge with largest cost in $P$}{
+		\Return False \tcp*{$T$ remains the MST}
+	}
+	{
+		\Return True \tcp*{$T$ does not remain the MST}
+	} 
+
+\end{algorithm}
+
+Complexity $O(n)$ since it is dominated by DFS algorithm.
+
+\begin{proposition}
+	Given a graph $G$, let's $T$ be the MST of $G$. Suppose we add a new edge
+	$c$ to $G$ to create $G'$. Then $T$ remains the MST of $G'$ iff $c$ is the
+	edge with largest cost in the cycle containing $c$ in the graph $T\cup \{c\}$.
+\end{proposition}
+\begin{proof}
+	Let's $T'$ be the MST of $G'$. Acoording to proposition~\ref{prop:4-1},
+		\[
+		 	T' \subset T \cup \{c\}
+		 \]
+	Clearly, $T\cup \{c\}$ can be created by removing non-MST edge from $G'$, therefore
+	according to proposition~\ref{prop:4-2}, $T'$ must the be MST of $T \cup \{c\}$.
+
+	Now, $T' = T$ is equivalent to $c$ being an unsafe edge in the graph $T \cup \{c\}$.
+	This is in turn equivalent to $c$ being the
+	edge with largest cost in some cycles containing $c$ in the graph $T\cup \{c\}$.
+
+	Now, since $T$ is a tree, there can be only one simple cycle in $T\cup \{c\}$ and 
+	the cycle contains $c$. The proof follows.
+
+\end{proof}
+\subsection*{b}
+\begin{algorithm}[H]
+	\caption{Fix MST($G, T, c$)}
+	Let $P=(e_1, ..., e_n)$ be the cycle computed with DFS($T \cup \{c\}$)\;
+	Let $e_m = \max_{i\in P} e_i$\;
+	\Return $T \cup \{c\} \setminus \{e_m\}$ 
+
+\end{algorithm}
+
+Complexity $O(n)$ since it is dominated by DFS algorithm.
+
+\begin{proposition}
+	Given a graph $G$, let's $T$ be the MST of $G$. Suppose we add a new edge
+	$c$ to $G$ to create $G'$. Then we can compute $T'$--the MST of $G'$--by looking
+	for the edge with largest cost in the graph $T\cup \{c\}$.
+\end{proposition}
+\begin{proof}
+	Following similar arguments as the proof for part a, we see that $T'$ must be
+	the MST of $T \cup \{c\}$. The edge with maximum cost is therefore an unsafe edge
+	and its removal would result in the set of only safe edges. 
+
+	The proof follows.	
 \end{proof}
 
 
