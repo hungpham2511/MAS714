@@ -248,43 +248,38 @@ We first state three propositions.
 
 \section*{Exercise 2}
 
-Assume that $X_L[1...n]$ is sorted with $X_L[1]$ being the smallest member.
-
+Assume that the indices of both $X_L$ and $X_R$ start with 0. 
 \begin{algorithm}[h]
-\caption{Find maximum tiling ($X$)}
-	Let $x$ be $-\infty$ \;
+\caption{Find maximum tiling ($X_L, X_R$)}
+	Sort both $X_L$ increasingly\;
+	Adjust $X_R$ according to the new order of $X_L$\;
+	Let $x$ be $X_L[0]$ \;
 	Initialize $T = \emptyset$\;
-	\While{$X$ is not empty}{
-		\eIf {$X_L[0] > x$}{
-			Let $x_{stop} = X_L[0]$\;
-		}{Let $x_{stop} = x$}
-		Let $x_{max} = -\infty$\;
-		\While{$X_L[0] \leq x_{stop}$}{
-			\If {$X_R[0] > x_{max}$}{
-				$x_{max} = X_R[0]$\;
-				Select $X[0]$ as the chosen interval $i$\;
-			}
-			Remove $X[0]$ from $X$\;
+	\While{$X_L$ is not empty}{
+		Let $Y$ be the set of all elements $i$ whose $X_L[i]\leq x$\;
+		\eIf{$Y == \emptyset$}{
+			$x = X_L[0]$\;
+		} 
+		{
+			Let $k = \argmax_{i \in Y} X_R[i]$ \tcp*{This step can be done when finding the set $Y$}
+			$x = X_R[k]$\;
+			Add $(X_L[k], X_R[k])$ to $T$\;
+			Remove $Y$ from both $X_L$ and $X_R$\;
 		}
-		Add the selected interval $i$ to $T$\;
-		% Let $O$ be the set of interval such that $X_L[i] \leq x$\;
-		% \If {$O == \emptyset$}{
-		% 	Let $O$ be the set of interval such that $X_L[i] == X_L[0]$\;
-		% }
-		% Let $X = X \setminus O$\;
-		% Sort $O$ according to the right end point\;
-		% Let $y = \argmax_{i \in O} i_R$\;
-		% Let $T = T\cup\{y\}$\;
-		% Let $x = y_R$\;
 	}
 	\Return $T$\;
 \end{algorithm}
 
 \subsubsection*{Analysis}
-Running time $O(n)$.
-\todo{Analyze exercise 2's algorithm}
+Sorting takes time $O(n \log n)$; each tile is iterated through exactly once, thus the while loop
+takes $O(n)$.
+Total $O(n \log n)$.
 \subsubsection*{Proof of correctness}
-\todo{Complete the proof for exercise 2}
+To show that Algorithm 2 is correct, we need to show two things:
+\begin{enumerate}
+	\item The set returned from Algorithm 2 is a tiling set.
+	\item There exist no other tiling set with less number of tiles.
+\end{enumerate}
 \section*{Exercise 3}
 
 \subsection*{a}
