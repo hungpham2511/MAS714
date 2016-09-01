@@ -262,8 +262,10 @@ Assume that the indices of both $X_L$ and $X_R$ start with 0.
 		} 
 		{
 			Let $k = \argmax_{i \in Y} X_R[i]$ \tcp*{This step can be done when finding the set $Y$}
+			\If {$X_R[k] > x$}{
 			$x = X_R[k]$\;
 			Add $(X_L[k], X_R[k])$ to $T$\;
+			}
 			Remove $Y$ from both $X_L$ and $X_R$\;
 		}
 	}
