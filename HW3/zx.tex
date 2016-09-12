@@ -1,0 +1,177 @@
+\documentclass[a4paper,10pt,twoside]{article}
+% \pdfoutput=1 
+
+\usepackage[bookmarks=true,colorlinks=true]{hyperref}
+
+\usepackage{bookmark}
+\bookmarksetup{
+ numbered, 
+ open,
+}
+\usepackage{todonotes}
+
+\usepackage{amssymb,amsmath}       % Equations
+\usepackage{array}
+\usepackage{bm}                    % Bold math symbols
+\usepackage{epsfig}
+\usepackage{float}
+\usepackage{graphicx,color,psfrag} % Graphics, Figures
+\usepackage[export]{adjustbox}
+\usepackage{subcaption}
+\usepackage{tikz}
+
+\usepackage{multirow}              % For Tables
+\usepackage{tabularx}              % Tables
+\usepackage{wrapfig}
+\usepackage[algoruled]{algorithm2e}
+\SetStartEndCondition{ }{}{}%
+\SetKwProg{Fn}{def}{\string:}{}
+\SetKwFunction{Range}{range}%%
+\SetKw{KwTo}{in}\SetKwFor{For}{for}{\string:}{}%
+\SetKwIF{If}{ElseIf}{Else}{if}{:}{elif}{else:}{}%
+\SetKwFor{While}{while}{:}{}%
+% \renewcommand{\forcond}{$i$ \KwTo\Range{$n$}}
+\AlgoDontDisplayBlockMarkers\SetAlgoNoEnd\SetAlgoNoLine%
+
+
+%% enumitem 
+% \labelindent is defined in both IEEEtrans and
+% enumitem. \let\labelindent\relax kind-of disables \labelindent
+% defined in IEEEtrans, hence avoiding the name clash.
+\let\labelindent\relax
+\usepackage[inline]{enumitem}
+
+% variables
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+% acronyms
+\newcommand{\ie}{{\textit{i.e.}}}
+\newcommand{\etal}{\textit{et~al.}}
+
+% theorem environment
+\usepackage{amsthm}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+% \newtheorem{exercise}{Exercise}[section]
+\newtheorem{example}[theorem]{Example}
+
+% Redefine exercise formating 
+% \theoremstyle{plain}
+\newtheorem{exercise}{Exercise}
+
+
+% figures path
+\graphicspath{{figures/}}
+
+% \overrideIEEEmargins
+% set margins
+\setlength{\floatsep}{2pt plus 1pt minus 1pt}
+\setlength{\textfloatsep}{5pt plus 1pt minus 2pt}
+
+%% TITLE
+\title{Homework 3}
+%% AUTHOR
+\author{Pham Tien Hung, Zhang Xu}
+
+%% DATE
+\date{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle
+\begin{exercise}
+
+Use binary heap with priority queue for implementation.
+
+\begin{algorithm}[h]
+	\caption{Merge $k$ sorted lists ($L[1][:], ..., L[k][:]$)}
+	Let $BH$ be an empty heap\;
+	$result = [  ]$\tcp*{output list}
+	\For{$i in [1, ..., k]$}{
+		Add($i$, $L[i][1]$)\tcp*{Initial heap}
+	}
+	\While {$BH$ is not $empty$ \do}{
+		$j$ = Extract-min($BH$) \tcp*{$j$-th sorted list}
+		$x$ = pop($L[j][1]$) \;
+		Add $x$ to $result$\;
+		if $L[j][:]$ is not $empty${\tcp*{insert only if not end of the list}
+			Add($j$, $L[j][1]$)\;
+		}
+	}
+	\Return $result$\;
+\end{algorithm}
+
+\begin{proof}
+Correctness: 
+
+The correctness follows that very time the minimum among all uninserted numbers is added to the output list of $result$.
+
+Time Complexity:
+
+It takes $O(k)$ to build the initial heap; for every element, it takes $O(lg k)$ for Extract-min and $O(lg k)$ to insert the next one from the same list. In total it takes $O(k + n lg k) = O(n lg k)$.
+
+\end{proof}
+\end{exercise}
+
+\begin{exercise}
+Make use of matrix multiplication.
+\begin{algorithm}[h]
+	\caption{$Fib(n)$}
+	\If {$n = 0$}
+		{\Return $0$}
+	\ElseIf{$n = 1$}
+		{\Return $1$}
+	\Else{
+		$F(0) = 0$\;
+		$F(1) = 1$\;
+		$A = \begin{bmatrix}1 & 1\\ 1 & 0\end{bmatrix}$\;
+	}
+		{\Return $A^n [F(1), F(0)]^T[0]$}\tcp*{return first element, $F(n)$}
+\end{algorithm}
+
+\begin{proof}
+Correctness: 
+
+With the matrix multiplication hint provided and definition of Fibonacci number, we can have the following relationship
+\begin{equation}
+	\begin{bmatrix}1 & 1\\ 1 & 0\end{bmatrix}\cdot
+	\begin{bmatrix}F(n-1)\\F(n-2)\end{bmatrix}
+	= \begin{bmatrix}F(n-1) + F(n-2)\\F(n-1)\end{bmatrix}
+	= \begin{bmatrix}F(n)\\F(n-1)\end{bmatrix}
+\end{equation}
+Let $A$  denote $\begin{bmatrix}1 & 1\\ 1 & 0\end{bmatrix}$, then it's not difficult to obtain 
+ \begin{equation}
+	A^n \cdot \begin{bmatrix}F(1)\\F(0)\end{bmatrix} = \begin{bmatrix}F(n)\\F(n-1)\end{bmatrix}
+\end{equation}
+
+Time Complexity:
+
+$O(n^{2.3728639}\log n)$, which is the time compexity for computing matrix multiplication.
+\end{proof}
+\end{exercise}
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
