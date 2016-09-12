@@ -157,6 +157,73 @@ $O(n^{2.3728639}\log n)$, which is the time compexity for computing matrix multi
 \end{proof}
 \end{exercise}
 
+\begin{exercise}
+\textbf{a)}
+Let $S(i, j)$ denote sum of the array from $i$-th element to the $j$-th element.
+\[
+	S(i, j) = \begin{cases}
+		0 \text{ if $i < j$}\\
+		\sum_{k=i}^j L[k] \text{ otherwise}\\
+		\end{cases}
+\]
+\begin{algorithm}[h]
+	\caption{Naive Sum(L[1..n])}
+	Let S be a n-by-n zero matrix\;
+	max = S[1, 1]\tcp*{initialize max sum to be at location [1, 1]}
+	\For{$i$ in $[1..n]$}{
+		\For{$j$ in $[1, ... ,n]$}{
+			\If{j $=$ i}{
+			S[i, j] = L[j]\;}
+			\ElseIf{j $>$ i}{
+			S[i, j] = S[i, j - 1] + L[j]\;
+ 				\If {S[i, j] $>$ max}{
+					max = S[i, j]}
+			}
+		}
+	}
+	\Return max
+\end{algorithm}
+\begin{proof}
+
+Correctness: 
+
+Intuitivey, sum is stored in a $n-by-n$ matrix S, where each entry S[i, j] is the summation from $i$-th element to $j$-th element in array $L$ for $i \leq j$. The algorithm will return the maximum sum from the matrix and return 0 if all numbers in array $L$ are negative.
+
+Time complexity:
+
+$\Theta(n^2)$. Constant computing costs within 2 $for$-loop of size $n$. 
+
+\end{proof}
+\textbf{b)} 
+Dynamic programming.
+\begin{algorithm}[h]
+	\caption{DP Sum($L[1..n]$)}
+	max = 0\;
+    	maxEnding = 0\;
+	\For{$i$ in $[1..n]$}{
+        		maxEnding = maxEnding + L[i]\;
+        		\If {maxEnding $<$ 0}{
+            		maxEnding = 0}
+         	\ElseIf {max $<$ maxEnding}
+			{max = maxEnding}
+	}
+	\Return max
+
+\end{algorithm}
+
+\begin{proof}
+
+Correctness: 
+
+Sum is stored in the number $maxEnding$ and $max$ keeps track of the maximum sum.  $maxEnding$ will be reset to $0$ every time it goes to negative. 
+The algorithm will return the maximum sum and return 0 if all numbers in array $L$ are negative.
+
+Time complexity:
+
+$\Theta(n)$. Constant computing costs within one $for$-loop of size $n$. 
+
+\end{proof}
+\end{exercise}
 
 \end{document}
 
