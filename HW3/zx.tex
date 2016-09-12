@@ -225,6 +225,25 @@ $\Theta(n)$. Constant computing costs within one $for$-loop of size $n$.
 \end{proof}
 \end{exercise}
 
+\begin{exercise}
+The problem can be interpreted as a graph problem with each currency to be a node and each exchange rate to be te weight of edge between two currencies. 
+By doing the following transforms, we can solve the problem by applying Floyd-Warshall Algorithm for determining the existence of negative cycle.
+ \[
+ 	\begin{aligned}
+		R[i_1, i_2] \cdot R[i_2, i_3] \cdot \cdot \cdot R[i_k, i_1] > 1 \\
+ 		\frac{1}{R[i_1, i_2]} \cdot \frac{1}{R[i_2, i_3]} \cdot \cdot \cdot \frac{1}{R[i_k, i_1]} < 1 \\
+		\log(\frac{1}{R[i_1, i_2]} \cdot \frac{1}{R[i_2, i_3]} \cdot \cdot \cdot \frac{1}{R[i_k, i_1]}) < \log(1) \\
+		\log(\frac{1}{R[i_1, i_2]}) + \log(\frac{1}{R[i_2, i_3]}) + ... + \log(\frac{1}{R[i_k, i_1]}) < 0 \\
+ 	\end{aligned}
+ \]
+Thus by replacing edge weight of $R[i, j]$ to $\log(\frac{1}{R[i, j]})$, the problem reduces to finding a negative cycle.\\
+
+Time Complexity:
+
+$O(n^3)$. 
+The Floyd-Warshall Algorithm uses 3 nested $for$-loop over n nodes.
+
+\end{exercise}
 \end{document}
 
 
