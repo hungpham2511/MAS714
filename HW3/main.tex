@@ -87,26 +87,38 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
+
 \maketitle
+\listoftodos
 \begin{exercise}[Sort $k$ sorted lists.]\
 
-Idea is to use a Priority Queue (min heap).
+Idea is to use a Priority Queue (min heap) to keep the smallest
+elements $k$ lists. Then at each iteration, we remove the smallest
+element from the Queue, pop that element from its list and add in
+the next smallest element in that list into the queue.
 \begin{algorithm}[h]
 	\caption{Sort $k$ sorted lists ($L[1...k][:]$)}
-	$PQ$ = Make-queue()\;
+	$Queue$ = Make-queue()\;
 	Let $X$ be an empty list\;
 	\For{$i$ in $[1,...,k]$}{
 		Add($i$, $L[i][1]$)\;
 	}
 	\For{$i$ in $[1,...,n]$}{
-		$j$ = Extract-min($PQ$) \tcp*{the $j$-th list}
+		$j$ = Extract-min($Queue$) \tcp*{pop the $j$-th list}
 		$x$ = pop($L[j][1]$) \tcp*{Remove the first element}
 		Add $x$ to $X$\;
-		Add($j$, $L[j][1]$)\;
+		Add($j$, $L[j][1]$, $Queue$) \tcp*{add the $j$-th list 1st element back}
 	}
 	\Return $X$\;
 \end{algorithm}
-\todo{Analyze Time Complexity}
+
+\textbf{Complexity}
+
+This algorithm requires $O(n)$ Extract-min and $O(n)$ Add. Each Add 
+operation has complexity $O(\log k)$. Thus the total complexity is
+$O(n \log k)$
+
+
 \end{exercise}
 
 \begin{exercise}[Computation of the Fibonacci number]
@@ -124,6 +136,17 @@ Clearly, from this we obtain
 \end{equation}
 where $A = \begin{pmatrix}1 & 1\\ 1 & 0\end{pmatrix}$.
 
+\begin{algorithm}[H]
+	\caption{Fib($n$)}
+	Let $A$ be the matrix $\begin{pmatrix}1 & 1\\ 1 & 0\end{pmatrix}$\;
+	M = exponential-by-squaring($A$, $n$)\;
+	$F(n)$ = multiply($M,[1, 1]$)[0]\;
+	\Return $F(n)$
+\end{algorithm}
+
+
+\textbf{Complexity}
+
 Computing $A^n$ takes $O(\log n)$ matrix multiplication (of constant
 size), thus the time complexity is $O(\log n)$.
 \end{exercise}
@@ -140,48 +163,105 @@ from the $i$-th element to the $j$-th element, that is
 \begin{algorithm}[H]
 	\caption{Naive summation}
 	Let $(1, 1)$ be the selected elements\;
-	Let sum = 0\;
+	Let sum = $-\infty$ \;
 	Initialize S as a n-by-n zero matrix\;
 	\For{$i$ in $[1,...,n]$}{
 		\For{$j$ in $[1,...,n]$}{
 			\If{j $>$ i}{
-			S[i, j] = S[i, j - 1] + L[j]\;
-			select i, j if S[i, j] is larger than current sum;
+			$S[i, j] = S[i, j - 1] + L[j]$\;
+			\If{$S[i, j] > sum$}{
+			select i, j\;
+			sum = S[i, j]
+			}
 			}
 		}
 	}
 	\Return sum
 \end{algorithm}
-\textbf{b)} I don't know if this is considered DP. Defining $S_l[i]$
+\textbf{b)} Defining $S_{left}[i]$
 as the sum of all element on the left of $j$ including $j$
 \[
-	S_l[i] = \sum_{j=1}^i L[j].
+	S_{left}[i] = \sum_{j=1}^i L[j].
 \]
 \end{exercise}
 
 Next, we find two elements $e_{min}$ and $e_{max}$ such that
 \[
 \begin{aligned}
-	e_{min} = \argmin_i L[i],\\
-	e_{max} = \argmax_i L[i].\\
+	e_{min} = \argmin_i S_{left}[i],\\
+	e_{max} = \argmax_i S_{left}[i].\\
 \end{aligned}
 \]
 Now, the maximum continguous subarray is given by $[e_{min}+1,...,e_{max}]$.
 
+\begin{algorithm}[H]
+\caption{Find maximum contiguous array(L)}
+Initialize zero array with length $n$ $S_{left}$\;
+Let $S_{left}[1]$ = $L[1]$\;
+\For {$i$ in $[2,...n]$}{
+	$S_{left}[i] = S_{left}[i-1] + L[i]$
+}
+Let $e_{min}$ = $e_{max}$ = 1\;
+\For {$i$ in $1,...n$}{
+	\If{$S_{left}[i] \geq S_{left}[e_max]$}{
+	$e_{max} = i$\;
+	}
+	\If{$S_{left}[i] \leq S_{left}[e_min]$}{
+	$e_{min} = i$\;
+	}
+}
+\Return $[e_{min} +1, ..., e_{max}]$
+\end{algorithm}
+
+\textbf{Complexity}
 
 Time complexities of all operations are $\Theta(n)$.
-\todo{Write down the algorithm}
 
+\begin{proof}
+To show that our algorithm produces correct result, we start from the
+problem statement
+\[
+	\begin{aligned}
+	&\max_{i, j} \sum_{k=i}^j L[k] \\
+	=&\max_{i, j} \left( \sum_{k=1}^j L[k] - \sum_{k=1}^{i-1} L[k] \right)\\
+	=&\max_{j} \sum_{k=1}^j L[k] - \min_{i}\sum_{k=1}^{i-1} L[k] 
+	\end{aligned}
+\]
+Our algorithm produces the corresponding $\argmax_j\sum_{k=1}^j L[k]$ 
+and $\argmin_i\sum_{k=1}^{i-1} L[k]$.
+\end{proof}
 \begin{exercise}[Arbitrage]\
 
 Compute the logarithm of the exhcange matrix $R[,]$, then construct
-a graph based on this matrix.
+a graph based on this matrix. Find negative cycle on this graph 
+using Floyd-Warshall.
 
-Find negative cycle on this graph using Floyd-Warshall. Complexity $O(n^3)$.
-	
+\todo{Check problem statement for the actual question ten complete the
+proof.}
+
+\begin{algorithm}[H]
+\caption{Check for negative Arbitrage($R[:, :]$)}
+\label{algo:negative-arbitrage}
+	Let $Adj[:, :]$ be the logarithm of the matrix $R[:,:]$\;
+	Construct graph $G(Adj)$\;
+	have-negative-cycle = Floyd-Warshall($G$)\;
+	\Return have-negative-cycle
+\end{algorithm}
+
+\begin{proof}
+We relies on the relation
+\[
+\begin{aligned}
+&\log (R[i_1, i_2]R[i_2, i_3]...R[i_k, i_1])\\
+=&\log R[i_1, i_2] + \log R[i_2, i_3] + ... + \log R[i_k, i_1]
+\end{aligned}
+\]
+\end{proof}
 \end{exercise}	
+\begin{exercise}
+\todo{Do exercise 5.}
+\end{exercise}
 \end{document}
-
 
 
 
