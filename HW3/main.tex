@@ -19,7 +19,7 @@
 \usepackage{float}
 \usepackage{graphicx,color,psfrag} % Graphics, Figures
 \usepackage[export]{adjustbox}
-\usepackage{subcaption}
+% \usepackage{subcaption}
 \usepackage{tikz}
 
 \usepackage{multirow}              % For Tables
@@ -52,10 +52,20 @@
 
 % theorem environment
 \usepackage{amsthm}
+\newtheoremstyle{exercise} % name
+    {\topsep}                    % Space above
+    {\topsep}                    % Space below
+    {}                   		 % Body font
+    {}                           % Indent amount
+    {\bfseries}                   % Theorem head font
+    {.}                          % Punctuation after theorem head
+    {.5em}                       % Space after theorem head
+    {}  % Theorem head spec (can be left empty, meaning ‘normal’)
+
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{proposition}{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
@@ -66,6 +76,7 @@
 
 % Redefine exercise formating 
 % \theoremstyle{plain}
+\theoremstyle{exercise}
 \newtheorem{exercise}{Exercise}
 
 
@@ -89,7 +100,6 @@
 \begin{document}
 
 \maketitle
-\listoftodos
 \begin{exercise}[Sort $k$ sorted lists.]\
 
 Idea is to use a Priority Queue (min heap) to keep the smallest
@@ -183,7 +193,6 @@ as the sum of all element on the left of $j$ including $j$
 \[
 	S_{left}[i] = \sum_{j=1}^i L[j].
 \]
-\end{exercise}
 
 Next, we find two elements $e_{min}$ and $e_{max}$ such that
 \[
@@ -192,9 +201,10 @@ Next, we find two elements $e_{min}$ and $e_{max}$ such that
 	e_{max} = \argmax_i S_{left}[i].\\
 \end{aligned}
 \]
-Now, the maximum continguous subarray is given by $[e_{min}+1,...,e_{max}]$.
+Now, the maximum contiguous sub-array is given by $[e_{min}+1,...,e_{max}]$.
 
 \begin{algorithm}[H]
+\label{algo:max-contiguous-array}
 \caption{Find maximum contiguous array(L)}
 Initialize zero array with length $n$ $S_{left}$\;
 Let $S_{left}[1]$ = $L[1]$\;
@@ -217,6 +227,11 @@ Let $e_{min}$ = $e_{max}$ = 1\;
 
 Time complexities of all operations are $\Theta(n)$.
 
+\begin{proposition}
+Algorithm~(\ref{algo:max-contiguous-array}) returns the maximum contiguous
+sub-array.
+\end{proposition}
+
 \begin{proof}
 To show that our algorithm produces correct result, we start from the
 problem statement
@@ -230,36 +245,73 @@ problem statement
 Our algorithm produces the corresponding $\argmax_j\sum_{k=1}^j L[k]$ 
 and $\argmin_i\sum_{k=1}^{i-1} L[k]$.
 \end{proof}
+\end{exercise}
+
 \begin{exercise}[Arbitrage]\
 
-Compute the logarithm of the exhcange matrix $R[,]$, then construct
+Compute the logarithm of the exchange matrix $R[,]$, then construct
 a graph based on this matrix. Find negative cycle on this graph 
 using Floyd-Warshall.
 
-\todo{Check problem statement for the actual question ten complete the
-proof.}
-
 \begin{algorithm}[H]
-\caption{Check for negative Arbitrage($R[:, :]$)}
+\caption{Arbitrage Opportunity($R[:, :]$)}
 \label{algo:negative-arbitrage}
-	Let $Adj[:, :]$ be the logarithm of the matrix $R[:,:]$\;
-	Construct graph $G(Adj)$\;
-	have-negative-cycle = Floyd-Warshall($G$)\;
-	\Return have-negative-cycle
+	Let $Adj[:, :] = -\log R[:,:]$ \tcp*{Component-wise logarithm}
+	Construct the graph $G(Adj)$\;
+	negative-cycle = Floyd-Warshall($G$)\;
+	\Return negative-cycle
 \end{algorithm}
 
+\begin{proposition}[Correctness]
+Algorithm~(\ref{algo:negative-arbitrage}) returns a correct arbitrage
+opportunity.
+\end{proposition}
+
 \begin{proof}
-We relies on the relation
+Let $i_1, i_2, ..., i_k$ be the cycle found by Floyd-Warshall algorithm,
 \[
 \begin{aligned}
-&\log (R[i_1, i_2]R[i_2, i_3]...R[i_k, i_1])\\
-=&\log R[i_1, i_2] + \log R[i_2, i_3] + ... + \log R[i_k, i_1]
+&- \log R[i_1, i_2] - \log R[i_2, i_3] - ... - \log R[i_k, i_1] < 0 \\
+\implies&\log (R[i_1, i_2]R[i_2, i_3]...R[i_k, i_1]) > 0\\
+\implies&R[i_1, i_2]R[i_2, i_3]...R[i_k, i_1] > 1.
 \end{aligned}
 \]
 \end{proof}
 \end{exercise}	
 \begin{exercise}
-\todo{Do exercise 5.}
+The idea is via max-flow reformulation of the bipartite matching graph. 
+More specifically, we add a source node $s$ directly connects to all vertices in $R$ with
+edges having capacity of 1. Similarly, a  sink node $t$ connected to all vertices
+in $L$ with edges having capacity of 1. Referring to the newly formulated flow
+problem as $G$ and the matching as a flow $f$, we first construct the residual 
+graph $G_f$. Then, we use DFS to find if there exist a path on $G_f$ that connects
+$s$ and $t$. If there is then the matching is not the maximum.
+\begin{algorithm}
+	\caption{Maximum Matching($R, L, E$)}
+	\label{algo:maximum-matching}
+	Let $G(R\cup L \cup\{s, t\}, E \cup\{\text{sources and sink edges}\})$ \;
+	Let $f=M\cup\{\text{edges from $s$ and $t$}\}$ \;
+	Compute residual graph $G_f(G, f)$\;
+	maximum-matching = DFS($s, t, G_f$) \tcp*{Find a path between $s$ and $t$}
+	\Return maximum-matching
+\end{algorithm}
+\begin{proposition}[Correctness]
+Algorithm~(\ref{algo:maximum-matching}) is correct. More specifically, there
+exists an augmenting path $P$ between $s$ and $t$ iff $M$ is not a maximum matching.
+\end{proposition}
+\begin{proof}
+There exist an augmenting path, thus
+\[
+	\text{val}(f) < \text{max-flow}(G).
+\]
+Now, note that $\text{val}(f) = \text{card}(M)$ by definition of $f$ 
+and that $\text{max-flow}(G)=\text{max-card}(R, L, E)$ (Theorem
+during lecture). Therefore
+\[
+	\iff\text{card}(M) < \text{max-card}(R, L, E),
+\]
+which means $M$ is not the maximum cardinality matching.
+\end{proof}
 \end{exercise}
 \end{document}
 
