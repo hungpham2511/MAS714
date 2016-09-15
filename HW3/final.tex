@@ -86,15 +86,18 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 \maketitle
-\begin{exercise}
+\begin{exercise}[Sort $k$ sorted lists]\
 
-Use binary heap with priority queue for implementation.
+Idea is to use a Priority Queue (min heap) to keep the smallest
+elements in $k$ lists. Then at each iteration, we remove the smallest
+element from the Queue, pop that element from its list and add in
+the next smallest element in that list into the queue.
 
 \begin{algorithm}[h]
 	\caption{Merge $k$ sorted lists ($L[1][:], ..., L[k][:]$)}
 	Let $BH$ be an empty heap\;
 	$result = [  ]$\tcp*{output list}
-	\For{$i$ in $[1, ..., k]$}{
+	\For{$i$ in $[1..k]$}{
 		Add($i$, $L[i][1]$)\tcp*{Initial heap}
 	}
 	\While {$BH$ is not $empty$ \do}{
@@ -107,7 +110,6 @@ Use binary heap with priority queue for implementation.
 	}
 	\Return $result$\;
 \end{algorithm}
-
 \begin{proof}
 Correctness: 
 
@@ -115,12 +117,13 @@ The correctness follows that very time the minimum among all uninserted numbers 
 
 Time Complexity:
 
-It takes $O(k)$ to build the initial heap; for every element, it takes $O(lg k)$ for Extract-min and $O(lg k)$ to insert the next one from the same list. In total it takes $O(k + n lg k) = O(n lg k)$.
+It takes $O(k)$ to build the initial heap; for every element, it takes $O(\log k)$ for Extract-min and $O(\log k)$ to insert the next one from the same list. In total it takes $O(k + n \log k) = O(n \log k)$.
 
 \end{proof}
 \end{exercise}
 
-\begin{exercise}
+\begin{exercise}[Computation of the Fibonacci number]\
+
 Make use of matrix multiplication.
 \begin{algorithm}[h]
 	\caption{$Fib(n)$}
@@ -157,7 +160,8 @@ $O(\log n)$, which is the time compexity for computing matrix multiplication for
 \end{proof}
 \end{exercise}
 
-\begin{exercise}
+\begin{exercise}[Computing maximum sum of contiguous subarray]\
+
 \textbf{a)}
 Let $S(i, j)$ denote sum of the array from $i$-th element to the $j$-th element.
 \[
@@ -194,8 +198,70 @@ Time complexity:
 $\Theta(n^2)$. Constant computing costs within 2 nested $for$-loop of size $n$. 
 
 \end{proof}
-\textbf{b)} 
-Dynamic programming.
+
+\textbf{b.1)} One approach.
+
+Defining $S_{left}[i]$
+as the sum of all element on the left of $j$ including $j$
+\[
+	S_{left}[i] = \sum_{j=1}^i L[j].
+\]
+
+Next, we find two elements $e_{min}$ and $e_{max}$ such that
+\[
+\begin{aligned}
+	e_{min} = \argmin_i S_{left}[i],\\
+	e_{max} = \argmax_i S_{left}[i].\\
+\end{aligned}
+\]
+Now, the maximum contiguous sub-array is given by $[e_{min}+1,...,e_{max}]$.
+
+\begin{algorithm}[H]
+\label{algo:max-contiguous-array}
+\caption{Find maximum contiguous array(L)}
+Initialize zero array with length $n$ $S_{left}$\;
+Let $S_{left}[1]$ = $L[1]$\;
+\For {$i$ in $[2,...n]$}{
+	$S_{left}[i] = S_{left}[i-1] + L[i]$
+}
+Let $e_{min}$ = $e_{max}$ = 1\;
+\For {$i$ in $[1..n]$}{
+	\If{$S_{left}[i] \geq S_{left}[e_{max}]$}{
+	$e_{max} = i$\;
+	}
+	\If{$S_{left}[i] \leq S_{left}[e_{min}]$}{
+	$e_{min} = i$\;
+	}
+}
+\Return $[e_{min} +1, ..., e_{max}]$
+\end{algorithm}
+
+\textbf{Complexity}
+
+Time complexities of all operations are $\Theta(n)$.
+
+\begin{proposition}
+Algorithm~(\ref{algo:max-contiguous-array}) returns the maximum contiguous
+sub-array.
+\end{proposition}
+
+\begin{proof}
+To show that our algorithm produces correct result, we start from the
+problem statement
+\[
+	\begin{aligned}
+	&\max_{i, j} \sum_{k=i}^j L[k] \\
+	=&\max_{i, j} \left( \sum_{k=1}^j L[k] - \sum_{k=1}^{i-1} L[k] \right)\\
+	=&\max_{j} \sum_{k=1}^j L[k] - \min_{i}\sum_{k=1}^{i-1} L[k] 
+	\end{aligned}
+\]
+Our algorithm produces the corresponding $\argmax_j\sum_{k=1}^j L[k]$ 
+and $\argmin_i\sum_{k=1}^{i-1} L[k]$.
+\end{proof}
+
+\textbf{b.2)} 
+Another approach.
+
 \begin{algorithm}[h]
 	\caption{DP Sum($L[1..n]$)}
 	max = 0\;
@@ -225,9 +291,22 @@ $\Theta(n)$. Constant computing costs within one $for$-loop of size $n$.
 \end{proof}
 \end{exercise}
 
-\begin{exercise}
+\begin{exercise}[Arbitrage]\
+
 The problem can be interpreted as a graph problem with each currency to be a node and each exchange rate to be te weight of edge between two currencies. 
 By doing the following transforms, we can solve the problem by applying Floyd-Warshall Algorithm for determining the existence of negative cycle.
+
+\begin{algorithm}[H]
+\caption{Arbitrage Opportunity($R[:, :]$)}
+\label{algo:negative-arbitrage}
+	Let $Adj[:, :] = -\log R[:,:]$ \tcp*{Component-wise logarithm}
+	Construct the graph $G(Adj)$\;
+	negative-cycle = Floyd-Warshall($G$)\;
+	\Return negative-cycle
+\end{algorithm}
+\begin{proof}
+Correctness:
+
  \[
  	\begin{aligned}
 		R[i_1, i_2] \cdot R[i_2, i_3] \cdot \cdot \cdot R[i_k, i_1] > 1 \\
@@ -242,10 +321,11 @@ Time Complexity:
 
 $O(n^3)$. 
 The Floyd-Warshall Algorithm uses 3 nested $for$-loop over n nodes.\\
-
+\end{proof}
 \end{exercise}
 
-\begin{exercise}
+\begin{exercise}[Maximum matching]\
+
 The Bipartite Matching problem can be transformed to Max-Flow Formulation.
 
 To check whether a given matching $M$ in bipartite graph $G$ is maximum matching, we have to construct its residual graph and check whether there is still augmenting path.
