@@ -153,7 +153,7 @@ Let $A$  denote $\begin{bmatrix}1 & 1\\ 1 & 0\end{bmatrix}$, then it's not diffi
 
 Time Complexity:
 
-$O(n^{2.3728639}\log n)$, which is the time compexity for computing matrix multiplication.
+$O(\log n)$, which is the time compexity for computing matrix multiplication for 2-by-2 size matrix.
 \end{proof}
 \end{exercise}
 
@@ -241,7 +241,39 @@ Thus by replacing edge weight of $R[i, j]$ to $\log(\frac{1}{R[i, j]})$, the pro
 Time Complexity:
 
 $O(n^3)$. 
-The Floyd-Warshall Algorithm uses 3 nested $for$-loop over n nodes.
+The Floyd-Warshall Algorithm uses 3 nested $for$-loop over n nodes.\\
+
+\end{exercise}
+
+\begin{exercise}
+The Bipartite Matching problem can be transformed to Max-Flow Formulation.
+
+To check whether a given matching $M$ in bipartite graph $G$ is maximum matching, we have to construct its residual graph and check whether there is still augmenting path.
+
+Given bipartite graph $G = \{L\cup R, E\}$ and its matching $M$, a directed graph $G' = \{L\cup R \cup\{s, t\}, E'\}$ is created as specified in notes. Then residual graph $G_f$ is then constructed as following:
+
+All edges from $L$ are directed to $R$ and assigned infinite capacity while those edges in $M$ also have reverse edges with unity capacity. Source $s$ is added and connected with each vertex in $L$ with unit capacity edges. For those vertices in $L$ but not in $M$, the edges point out from $s$, and for those in $L$ and $M$, edges point to $s$. Similarly, sink $t$ is added with unit capacity edges. For vertices in $R$ but not in $M$, edges point to $t$, otherwise edges come out from $t$.
+
+\begin{algorithm}[h]
+	\caption{Check Max Matching($G(L\cup R, E), M$)}
+	Construct residual graph $G_f(L\cup R \cup\{s, t\}, E')$\;
+	\If {there exists an augmenting path $P$ in $G_f$}
+		{\Return $False$}
+	\Else
+		{\Return $True$}
+
+\end{algorithm}
+
+\begin{proof}
+Correctness:
+
+According to the theorem that max cardinality of a matching in $G$ equals to the value of max flow in $G'$, and the Augmenting Path Theorem, we will construct the residual graph and search whether there is augmenting path. If there is, the flow is not max-flow, which indicates that the matching is not a maximum matching, the algorithm returns $False$. Otherwise returns $True$.
+
+Time Complexity:
+
+$O(m+n)$.
+BFS or DFS can be performed to check whether there is augmenting path.
+\end{proof}
 
 \end{exercise}
 \end{document}
