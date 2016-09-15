@@ -256,7 +256,8 @@ All edges from $L$ are directed to $R$ and assigned infinite capacity while thos
 
 \begin{algorithm}[h]
 	\caption{Check Max Matching($G(L\cup R, E), M$)}
-	Construct residual graph $G_f(L\cup R \cup\{s, t\}, E')$\;
+	Create $G'(L\cup R \cup\{s, t\}, E')$\;
+	Construct residual graph $G_f$ \;
 	\If {there exists an augmenting path $P$ in $G_f$}
 		{\Return $False$}
 	\Else
